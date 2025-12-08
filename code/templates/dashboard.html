@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Welcome back, {{ session.username }}! 👋</h1>
+    <p>Here's your fitness overview</p>
+</div>
+
+<!-- Summary Cards -->
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🏋️</div>
+        <div class="stat-content">
+            <h3>{{ workout_count }}</h3>
+            <p>Workouts This Week</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-content">
+            <h3>{{ total_weekly_duration }} min</h3>
+            <p>Total Duration</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+            <h3>{{ total_weekly_calories }}</h3>
+            <p>Calories Burned</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-content">
+            <h3>{% if latest_weight %}{{ "%.1f"|format(latest_weight.weight) }} lbs{% else %}--{% endif %}</h3>
+            <p>Current Weight</p>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="action-buttons">
+        <a href="{{ url_for('add_workout') }}" class="btn btn-primary">➕ Add Workout</a>
+        <a href="{{ url_for('weight_tracking') }}" class="btn btn-secondary">⚖️ Log Weight</a>
+        <a href="{{ url_for('daily_stats') }}" class="btn btn-secondary">📊 Update Stats</a>
+        <a href="{{ url_for('analytics') }}" class="btn btn-secondary">📈 View Analytics</a>
+    </div>
+</div>
+
+<!-- Recent Workouts -->
+<div class="recent-section">
+    <h2>Recent Workouts</h2>
+    {% if recent_workouts %}
+    <div class="workout-list">
+        {% for workout in recent_workouts %}
+        <div class="workout-item">
+            <div class="workout-info">
+                <h3>{{ workout.workout_type }}</h3>
+                <p class="workout-meta">
+                    {{ workout.date.strftime('%b %d, %Y') }} | 
+                    {{ workout.duration }} min
+                    {% if workout.calories %} | {{ workout.calories }} cal{% endif %}
+                    {% if workout.distance %} | {{ "%.2f"|format(workout.distance) }} mi{% endif %}
+                </p>
+                {% if workout.notes %}
+                <p class="workout-notes">{{ workout.notes }}</p>
+                {% endif %}
+            </div>
+            <a href="{{ url_for('delete_workout', workout_id=workout.id) }}" 
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete this workout?')">Delete</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-data">No workouts yet. <a href="{{ url_for('add_workout') }}">Add your first workout!</a></p>
+    {% endif %}
+</div>
+
+<!-- Today's Stats -->
+{% if today_stats %}
+<div class="today-stats">
+    <h2>Today's Activity</h2>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <span class="stat-value">{{ today_stats.steps }}</span>
+            <span class="stat-label">Steps</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-value">{{ today_stats.calories_consumed }}</span>
+            <span class="stat-label">Calories Consumed</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

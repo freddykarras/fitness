@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Stats - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Daily Statistics 📊</h1>
+</div>
+
+<!-- Update Today's Stats -->
+<div class="form-container">
+    <h2>Update Today's Stats</h2>
+    <form method="POST" action="{{ url_for('update_daily_stats') }}" class="stats-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="steps">Steps</label>
+                <input type="number" name="steps" id="steps" class="form-control" 
+                       value="{{ today_stats.steps if today_stats else 0 }}" 
+                       min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="calories">Calories Consumed</label>
+                <input type="number" name="calories" id="calories" class="form-control" 
+                       value="{{ today_stats.calories_consumed if today_stats else 0 }}" 
+                       min="0" required>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update Stats</button>
+    </form>
+</div>
+
+<!-- Recent Stats History -->
+{% if recent_stats %}
+<div class="stats-section">
+    <h2>Last 7 Days</h2>
+    <div class="stats-history">
+        {% for stat in recent_stats %}
+        <div class="stat-entry">
+            <span class="stat-date">{{ stat.date.strftime('%b %d, %Y') }}</span>
+            <div class="stat-details">
+                <span class="stat-item">👟 {{ stat.steps }} steps</span>
+                <span class="stat-item">🍔 {{ stat.calories_consumed }} cal</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

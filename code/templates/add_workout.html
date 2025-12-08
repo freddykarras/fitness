@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Add Workout - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Add New Workout</h1>
+</div>
+
+<div class="form-container">
+    <form method="POST" action="{{ url_for('add_workout') }}" class="workout-form">
+        <div class="form-group">
+            <label for="workout_type">Workout Type *</label>
+            <select name="workout_type" id="workout_type" class="form-control" required>
+                <option value="">Select workout type...</option>
+                <option value="Running">Running</option>
+                <option value="Cycling">Cycling</option>
+                <option value="Swimming">Swimming</option>
+                <option value="Gym">Gym</option>
+                <option value="Yoga">Yoga</option>
+                <option value="Walking">Walking</option>
+                <option value="Hiking">Hiking</option>
+                <option value="Sports">Sports</option>
+                <option value="HIIT">HIIT</option>
+                <option value="Weightlifting">Weightlifting</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="duration">Duration (minutes) *</label>
+                <input type="number" name="duration" id="duration" class="form-control" 
+                       min="1" required placeholder="e.g., 30">
+            </div>
+            
+            <div class="form-group">
+                <label for="calories">Calories Burned</label>
+                <input type="number" name="calories" id="calories" class="form-control" 
+                       min="0" placeholder="e.g., 300">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="distance">Distance (miles)</label>
+            <input type="number" name="distance" id="distance" class="form-control" 
+                   step="0.01" min="0" placeholder="e.g., 3.5">
+        </div>
+        
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea name="notes" id="notes" class="form-control" rows="4" 
+                      placeholder="How did you feel? Any achievements?"></textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Workout</button>
+            <a href="{{ url_for('workouts') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

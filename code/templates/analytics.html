@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Analytics Dashboard 📈</h1>
+    <p>Visualize your fitness data from the last 30 days</p>
+</div>
+
+<div class="analytics-grid">
+    <!-- Workout Types Distribution -->
+    <div class="chart-card">
+        <h3>Workout Distribution</h3>
+        <canvas id="workoutPieChart"></canvas>
+    </div>
+    
+    <!-- Total Duration by Type -->
+    <div class="chart-card">
+        <h3>Total Duration by Type</h3>
+        <canvas id="durationBarChart"></canvas>
+    </div>
+    
+    <!-- Calories Burned by Type -->
+    <div class="chart-card">
+        <h3>Calories Burned by Type</h3>
+        <canvas id="caloriesBarChart"></canvas>
+    </div>
+    
+    <!-- Daily Steps Trend -->
+    <div class="chart-card">
+        <h3>Daily Steps (Last 14 Days)</h3>
+        <canvas id="stepsLineChart"></canvas>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Fetch and display workout data
+fetch('/api/workout_data')
+    .then(response => response.json())
+    .then(data => {
+        // Pie Chart - Workout Distribution
+        const pieCtx = document.getElementById('workoutPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Number of Workouts',
+                    data: data.counts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)',
+                        'rgba(255, 159, 64, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Bar Chart - Duration
+        const durationCtx = document.getElementById('durationBarChart').getContext('2d');
+        new Chart(durationCtx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Total Duration (minutes)',
+                    data: data.durations,
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Minutes'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Bar Chart - Calories
+        const caloriesCtx = document.getElementById('caloriesBarChart').getContext('2d');
+        new Chart(caloriesCtx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Calories Burned',
+                    data: data.calories,
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Calories'
+                        }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error loading workout data:', error));
+
+// Fetch and display daily stats
+fetch('/api/daily_stats_data')
+    .then(response => response.json())
+    .then(data => {
+        const stepsCtx = document.getElementById('stepsLineChart').getContext('2d');
+        new Chart(stepsCtx, {
+            type: 'line',
+            data: {
+                labels: data.dates,
+                datasets: [{
+                    label: 'Steps',
+                    data: data.steps,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Steps'
+                        }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error loading daily stats:', error));
+</script>
+{% endblock %}

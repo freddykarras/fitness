@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Weight Tracking - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Weight Tracking ⚖️</h1>
+</div>
+
+<!-- Add Weight Form -->
+<div class="form-container-inline">
+    <form method="POST" action="{{ url_for('add_weight') }}" class="inline-form">
+        <div class="form-group-inline">
+            <label for="weight">Log Today's Weight:</label>
+            <input type="number" name="weight" id="weight" class="form-control" 
+                   step="0.1" min="0" max="1000" required placeholder="lbs">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+</div>
+
+<!-- Weight History -->
+{% if weights %}
+<div class="weight-section">
+    <h2>Weight History</h2>
+    <div class="weight-list">
+        {% for weight in weights %}
+        <div class="weight-entry">
+            <span class="weight-date">{{ weight.date.strftime('%b %d, %Y') }}</span>
+            <span class="weight-value">{{ "%.1f"|format(weight.weight) }} lbs</span>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Weight Chart -->
+    <div class="chart-container">
+        <canvas id="weightChart"></canvas>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No weight entries yet. Start tracking your weight progress!</p>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+{% if weights %}
+<script>
+// Fetch weight data and create chart
+fetch('/api/weight_data')
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('weightChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.dates,
+                datasets: [{
+                    label: 'Weight (lbs)',
+                    data: data.weights,
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Weight Progress Over Time'
+                    },
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Weight (lbs)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error loading weight data:', error));
+</script>
+{% endif %}
+{% endblock %}

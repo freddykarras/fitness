@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Fitness Tracker - Home{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Track Your Fitness Journey</h1>
+        <p class="hero-subtitle">Monitor workouts, track weight, count steps, and visualize your progress</p>
+        
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary btn-large">Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <h2 class="section-title">Features</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🏋️</div>
+            <h3>Track Workouts</h3>
+            <p>Log different types of workouts with duration, calories, and distance</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">⚖️</div>
+            <h3>Monitor Weight</h3>
+            <p>Track your weight over time and visualize progress</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">👟</div>
+            <h3>Count Steps</h3>
+            <p>Record daily steps and calorie consumption</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Visualize Data</h3>
+            <p>Interactive charts and graphs powered by Chart.js</p>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <h2>Ready to Start Your Fitness Journey?</h2>
+    <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">Create Free Account</a>
+</div>
+{% endblock %}
