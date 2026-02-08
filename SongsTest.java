@@ -255,8 +255,6 @@ public class SongsTest extends TestCase {
         r = it.remove("wrong", "Name");
         assertTrue(r.contains("Bad type value"));
         assertTrue(r.contains("|wrong|"));
-
-        r = it.remove("wrong", "X");
         assertTrue(r.contains("Bad"));
         assertTrue(r.contains("wrong"));
 
@@ -269,22 +267,12 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        String r = it.insert("Test", "Song");
-        assertTrue(r.contains("|Test|"));
+        String r = it.insert("Alpha", "Beta");
+        assertTrue(r.contains("|Alpha|"));
         assertTrue(r.contains("is added to"));
         assertTrue(r.contains("database"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.insert("Name", "Title");
         int pipeCount = r.length() - r.replace("|", "").length();
         assertTrue(pipeCount >= 4);
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.insert("A", "S");
         assertTrue(r.contains("Artist"));
         assertTrue(r.contains("Song"));
         assertFalse(r.contains("artist database"));
@@ -296,28 +284,23 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("Dup", "Song1");
-        String r = it.insert("Dup", "Song2");
-        assertTrue(r.contains("|Dup|"));
+        it.insert("Alpha", "Beta");
+        String r = it.insert("Alpha", "Delta");
+        assertTrue(r.contains("|Alpha|"));
         assertTrue(r.contains("duplicates"));
         assertTrue(r.contains("Artist"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("A1", "Same");
-        r = it.insert("A2", "Same");
-        assertTrue(r.contains("duplicates"));
-        assertTrue(r.contains("Song database"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("Same", "S");
         String before = it.print("artist");
-        it.insert("Same", "T");
+        it.insert("Alpha", "Zeta");
         String after = it.print("artist");
         assertEquals(before, after);
+
+        it = new SongsDB();
+        it.create(10, 128);
+
+        it.insert("Alpha", "Beta");
+        r = it.insert("Gamma", "Beta");
+        assertTrue(r.contains("duplicates"));
+        assertTrue(r.contains("Song database"));
     }
 
     // Merged: testRemoveMessage, testSongRemove, testRemoveArtistMsg,
@@ -326,44 +309,26 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("X", "Y");
-        String r = it.remove("artist", "X");
-        assertTrue(r.contains("|X|"));
+        it.insert("Alpha", "Beta");
+        String r = it.remove("artist", "Alpha");
+        assertTrue(r.contains("|Alpha|"));
         assertTrue(r.contains("removed from"));
         assertTrue(r.contains("Artist database"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("A", "SongX");
-        r = it.remove("song", "SongX");
-        assertTrue(r.contains("|SongX|"));
-        assertTrue(r.contains("removed from"));
-        assertTrue(r.contains("Song database"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("A", "S");
-        r = it.remove("artist", "A");
         assertTrue(r.contains("Artist"));
         assertFalse(r.contains("artist"));
         assertFalse(r.contains("Song"));
+        assertTrue(r.contains("|"));
 
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("A", "S");
-        r = it.remove("song", "S");
+        it.insert("Alpha", "Beta");
+        r = it.remove("song", "Beta");
+        assertTrue(r.contains("|Beta|"));
+        assertTrue(r.contains("removed from"));
+        assertTrue(r.contains("Song database"));
         assertTrue(r.contains("Song"));
         assertFalse(r.contains("Artist"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("A", "S");
-        r = it.remove("artist", "A");
-        assertTrue(r.contains("|"));
     }
 
     // Merged: testNonExistent, testSongNotExist, testNotExistArtist,
@@ -372,36 +337,21 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        String r = it.remove("artist", "Missing");
-        assertTrue(r.contains("does not exist"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.remove("song", "NoSong");
-        assertTrue(r.contains("does not exist"));
-        assertTrue(r.contains("Song database"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.remove("artist", "X");
+        String r = it.remove("artist", "Alpha");
         assertTrue(r.contains("does not exist"));
         assertTrue(r.contains("Artist"));
 
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.remove("song", "X");
+        r = it.remove("song", "Alpha");
         assertTrue(r.contains("does not exist"));
+        assertTrue(r.contains("Song database"));
         assertTrue(r.contains("Song"));
 
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("X", "Y");
-        it.remove("artist", "X");
-        r = it.remove("artist", "X");
+        it.insert("Alpha", "Beta");
+        it.remove("artist", "Alpha");
+        r = it.remove("artist", "Alpha");
         assertTrue(r.contains("does not exist"));
     }
 
@@ -546,20 +496,15 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 16);
 
-        String r = it.insert("LongName", "LongTitle");
+        String r = it.insert("LongArtistName", "LongSongName");
         assertTrue(r.contains("expanded") || r.contains("added"));
-
-        it = new SongsDB();
-        it.create(10, 16);
-
-        r = it.insert("LongArtistName", "LongSongName");
         assertTrue(r.contains("expanded"));
         assertTrue(r.contains("bytes"));
 
         it = new SongsDB();
         it.create(10, 128);
 
-        r = it.insert("A", "S");
+        r = it.insert("Alpha", "Beta");
         assertFalse(r.contains("expanded"));
     }
 
@@ -569,20 +514,10 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("X", "Y");
         String r = it.print("artist");
-        assertTrue(r.contains(": |X|"));
-        assertTrue(r.contains("total artists"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.print("artist");
         assertTrue(r.contains("artists"));
         assertFalse(r.contains("songs"));
-
-        it = new SongsDB();
-        it.create(10, 128);
+        assertTrue(r.contains("total"));
 
         r = it.print("song");
         assertTrue(r.contains("songs"));
@@ -591,29 +526,13 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("A", "S");
+        it.insert("Alpha", "Beta");
         r = it.print("artist");
+        assertTrue(r.contains(": |Alpha|"));
+        assertTrue(r.contains("total artists"));
         assertTrue(r.contains(":"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("A", "S");
-        r = it.print("artist");
-        assertTrue(r.contains("|A|"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("A", "S");
-        r = it.print("artist");
+        assertTrue(r.contains("|Alpha|"));
         //assertTrue(r.matches(".*\\d.*"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        r = it.print("artist");
-        assertTrue(r.contains("total"));
     }
 
     // Merged: testClearWorks, testClearReturnsTrue, testClearReturnsFalse,
@@ -654,29 +573,23 @@ public class SongsTest extends TestCase {
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("Name", "Name");
-        it.remove("artist", "Name");
-        assertTrue(it.print("song").contains("Name"));
-        assertTrue(it.print("artist").contains("TOMBSTONE"));
-
-        it = new SongsDB();
-        it.create(10, 128);
-
-        it.insert("Same", "Same");
+        it.insert("Echo", "Echo");
         String a = it.print("artist");
         String s = it.print("song");
-        assertTrue(a.contains("Same"));
-        assertTrue(s.contains("Same"));
+        assertTrue(a.contains("Echo"));
+        assertTrue(s.contains("Echo"));
 
         it = new SongsDB();
         it.create(10, 128);
 
-        it.insert("X", "X");
-        it.remove("artist", "X");
+        it.insert("Echo", "Echo");
+        it.remove("artist", "Echo");
+        assertTrue(it.print("song").contains("Echo"));
+        assertTrue(it.print("artist").contains("TOMBSTONE"));
         a = it.print("artist");
         s = it.print("song");
-        assertFalse(a.contains("|X|"));
-        assertTrue(s.contains("|X|"));
+        assertFalse(a.contains("|Echo|"));
+        assertTrue(s.contains("|Echo|"));
     }
 
     // Merged: testBlocksPrint, testBlocksHasColon, testBlocksHasNumber,
