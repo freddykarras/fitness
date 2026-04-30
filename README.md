@@ -1,7 +1,6 @@
 # Fitness Tracker Web Application
 
 **Author:** Freddy Karras  
-**Course:** CS Problem Solving - Fall 2025  
 **Institution:** Virginia Tech
 
 ## Project Overview
